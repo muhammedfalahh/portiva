@@ -18,10 +18,17 @@
  * type checking on categorical columns.
  *
  * Usage with Supabase client:
+ *   import type { ThemeConfig } from '@/lib/theme.types';
  *   import type { Database } from '@/lib/database.types';
  *   const supabase = createClient<Database>(...);
  *   // All .from('table').select() calls are now fully typed
  */
+
+// =============================================================================
+// Imports
+// =============================================================================
+
+import type { ThemeConfig } from '@/lib/theme.types';
 
 // =============================================================================
 // Enum Type Aliases
@@ -86,6 +93,7 @@ export interface Database {
           handle: string;
           full_name: string;
           subscription_tier: SubscriptionTier;
+          theme_config: ThemeConfig | Record<string, never>;
           is_moderated: boolean;
           created_at: string;
         };
@@ -95,6 +103,7 @@ export interface Database {
           handle: string;
           full_name: string;
           subscription_tier?: SubscriptionTier;
+          theme_config?: Partial<ThemeConfig>;
           is_moderated?: boolean;
           created_at?: string;
         };
@@ -104,6 +113,7 @@ export interface Database {
           handle?: string;
           full_name?: string;
           subscription_tier?: SubscriptionTier;
+          theme_config?: Partial<ThemeConfig>;
           is_moderated?: boolean;
           created_at?: string;
         };

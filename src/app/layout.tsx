@@ -1,56 +1,65 @@
-/**
- * =============================================================================
- * PORTIVA: Root Layout
- * =============================================================================
- *
- * The root layout wraps every page in the application. It provides:
- *   - Google Fonts loading (Inter for body, Geist Mono for code)
- *   - Global dark theme HTML attributes
- *   - SEO metadata defaults (title template, description, Open Graph)
- *   - Viewport and theme-color configuration
- *
- * Inter was chosen over the default Geist Sans because:
- *   - Superior readability at small sizes (critical for mobile bento cards)
- *   - Excellent Arabic/Devanagari script support (Indian market)
- *   - Widely cached in browser font stores (performance win)
- */
-
 import type { Metadata, Viewport } from 'next';
-import { Inter, Geist_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, Outfit, Geist_Mono, Cormorant_Garamond, Instrument_Serif } from 'next/font/google';
 import './globals.css';
 
 // ─── Font Configuration ─────────────────────────────────────────────────────
-// next/font/google automatically self-hosts fonts at build time,
-// eliminating external network requests and improving LCP.
-
-const inter = Inter({
-  variable: '--font-inter',
+// Plus Jakarta Sans — Primary body font: clean, geometric, excellent readability
+const jakarta = Plus_Jakarta_Sans({
+  variable: '--font-jakarta',
   subsets: ['latin'],
-  display: 'swap', // Show fallback font immediately, swap when loaded
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
+// Outfit — Display / heading font: modern, clean geometric sans with character
+const outfit = Outfit({
+  variable: '--font-outfit',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
+
+// Geist Mono — Code / monospace font: clean developer aesthetic
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
 });
 
-// ─── SEO Metadata ───────────────────────────────────────────────────────────
+// Cormorant Garamond — Editorial serif font
+const cormorant = Cormorant_Garamond({
+  variable: '--font-cormorant',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+});
 
+// Instrument Serif — Editorial display font
+const instrument = Instrument_Serif({
+  variable: '--font-instrument',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400'],
+  style: ['normal', 'italic'],
+});
+
+// ─── SEO Metadata ───────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: {
     template: '%s — Portiva',
-    default: 'Portiva — Build Your Bento Grid Micro-Website in 60 Seconds',
+    default: 'Portiva — Build Your Website in Minutes',
   },
   description:
-    'Portiva is an ultra-premium bento-grid micro-website engine. Create stunning link-in-bio pages, WhatsApp storefronts, and auto dealership listings in seconds.',
+    'Portiva is a premium website builder for creators and businesses. Build stunning micro-websites, storefronts, and portfolios with zero code — powered by edge delivery.',
   keywords: [
-    'bento grid',
+    'website builder',
+    'portfolio',
     'link in bio',
     'micro website',
-    'WhatsApp store',
-    'auto dealership',
+    'storefront',
     'portiva',
+    'no code',
   ],
   authors: [{ name: 'Portiva' }],
   openGraph: {
@@ -58,15 +67,15 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     url: 'https://portiva.in',
     siteName: 'Portiva',
-    title: 'Portiva — Build Your Bento Grid Micro-Website in 60 Seconds',
+    title: 'Portiva — Build Your Website in Minutes',
     description:
-      'Create stunning link-in-bio pages, WhatsApp storefronts, and auto dealership listings.',
+      'Build stunning micro-websites, storefronts, and portfolios with zero code.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Portiva — Build Your Bento Grid Micro-Website in 60 Seconds',
+    title: 'Portiva — Build Your Website in Minutes',
     description:
-      'Create stunning link-in-bio pages, WhatsApp storefronts, and auto dealership listings.',
+      'Build stunning micro-websites, storefronts, and portfolios with zero code.',
   },
   robots: {
     index: true,
@@ -79,13 +88,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#08080A',
+  themeColor: '#09090B',
   width: 'device-width',
   initialScale: 1,
 };
 
 // ─── Root Layout Component ──────────────────────────────────────────────────
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -94,12 +102,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
-      // Force dark color scheme at the HTML level to prevent
-      // flash of white content on initial load.
+      className={`${jakarta.variable} ${outfit.variable} ${geistMono.variable} ${cormorant.variable} ${instrument.variable} h-full antialiased`}
       style={{ colorScheme: 'dark' }}
     >
-      <body className="min-h-full flex flex-col bg-[#08080A] text-slate-100">
+      <body className="min-h-full flex flex-col bg-bg-primary text-text-primary">
         {children}
       </body>
     </html>

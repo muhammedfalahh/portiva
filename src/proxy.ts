@@ -1,6 +1,6 @@
 /**
  * =============================================================================
- * PORTIVA: Edge Middleware — SWR Cache Headers & Session Refresh
+ * PORTIVA: Edge Proxy — SWR Cache Headers & Session Refresh
  * =============================================================================
  *
  * This middleware runs at the Vercel Edge Network on every matching request.
@@ -31,7 +31,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const currentPath = request.nextUrl.pathname;
 
   // ── Skip paths that don't need middleware processing ──────────────────

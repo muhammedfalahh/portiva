@@ -77,10 +77,10 @@ export const InventoryStatusWorkflow: React.FC<InventoryWorkflowProps> = ({
   };
 
   return (
-    <div className="w-full bg-[#131318] border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-4">
+    <div className="w-full bg-bg-secondary border border-border-default rounded-2xl p-4 flex items-center justify-between gap-4">
       {/* Vehicle Info */}
       <div className="flex flex-col">
-        <h4 className="text-sm font-bold text-slate-200 uppercase tracking-wide line-clamp-1">
+        <h4 className="text-sm font-bold text-text-primary uppercase tracking-wide line-clamp-1">
           {carTitle}
         </h4>
         <div className="flex items-center gap-2 mt-1">
@@ -88,11 +88,11 @@ export const InventoryStatusWorkflow: React.FC<InventoryWorkflowProps> = ({
           <div
             className={`w-2 h-2 rounded-full ${
               status === 'sold'
-                ? 'bg-red-500'
-                : 'bg-indigo-400 animate-pulse'
+                ? 'bg-danger'
+                : 'bg-accent animate-pulse-subtle'
             }`}
           />
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          <span className="text-[11px] font-bold text-text-secondary uppercase tracking-widest">
             Active State: {status}
           </span>
         </div>
@@ -102,10 +102,10 @@ export const InventoryStatusWorkflow: React.FC<InventoryWorkflowProps> = ({
       <button
         onClick={toggleInventoryState}
         disabled={isPending}
-        className={`px-4 py-2 text-xs font-black uppercase tracking-widest rounded-xl transition duration-200 ${
+        className={`btn btn-sm text-xs font-black uppercase tracking-widest transition duration-200 ${
           status === 'sold'
-            ? 'bg-red-950/40 hover:bg-red-900/30 text-red-400 border border-red-900/40'
-            : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+            ? 'btn-danger'
+            : 'btn-primary'
         } disabled:opacity-40`}
       >
         {isPending ? 'Syncing...' : status === 'sold' ? 'Restore Item' : 'Mark Sold'}
