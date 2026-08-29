@@ -14,7 +14,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVisualBuilder } from './VisualBuilderContext';
 import { useWorkspaceStore } from './useWorkspaceStore';
-import { BentoBioConfig, BentoBioBox, BentoBioPresetId, BENTO_BIO_PRESETS, DEFAULT_BENTO_BOXES } from '@/components/templates/BentoBio';
+// BentoBio types/presets live in lib/bentobio (shared data model). Importing
+// from the lib keeps the engine free of template-component dependencies.
+import { BentoBioConfig, BentoBioBox, BentoBioPresetId, BENTO_BIO_PRESETS, DEFAULT_BENTO_BOXES } from '@/lib/bentobio';
 import {
   Sliders,
   Type,
@@ -126,6 +128,12 @@ export function InspectorSidebar({ isOpen = false, onClose, mobileDrawerMode }: 
   const hasContactCardsBlock = templateData?.blocks?.some(
     (b) => b.id === 'luxe-contact' || b.id === 'contact-cards' || (b.content && (Array.isArray(b.content.cards) || Array.isArray(b.content.contactItems)))
   );
+
+  // Check if active template is FORME Creative Portfolio
+  const isCreativePortfolio =
+    activeTemplateId === 'premium_creative_portfolio' ||
+    activeTemplateId === 'creative-portfolio' ||
+    templateData?.profileHandle === 'forme';
 
   // Local form states synced with selected element
   const [text, setText] = useState('');
@@ -300,6 +308,9 @@ export function InspectorSidebar({ isOpen = false, onClose, mobileDrawerMode }: 
 
           {/* Dedicated Link-in-Bio & Bento Customizer Panel */}
           {isBentoBioTemplate && <BentoBioInspectorPanel />}
+
+          {/* Dedicated FORME Navbar & Social Links Panel */}
+          {isCreativePortfolio && <FormeNavbarSocialManagementPanel />}
 
           {/* Collapsible Global Styling Accordion */}
           <div className="flex flex-col gap-3">
@@ -973,18 +984,24 @@ export function InspectorSidebar({ isOpen = false, onClose, mobileDrawerMode }: 
                       );
                     })()}
 
-                    {/* Button Editing for buttons */}
+                    {/* Button / Link Editing */}
                     {isButton && (
                       <div className="flex flex-col gap-4">
                         <div className="flex items-center gap-1.5 mb-1.5">
-                          <MousePointerClick className="w-3.5 h-3.5 text-text-tertiary" />
+                          {selectedElement.id.includes('social') ? (
+                            <Share2 className="w-3.5 h-3.5 text-accent" />
+                          ) : (
+                            <MousePointerClick className="w-3.5 h-3.5 text-text-tertiary" />
+                          )}
                           <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide">
-                            Button Action
+                            {selectedElement.id.includes('social') ? 'Social Link Action' : 'Button Action'}
                           </label>
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide mb-1.5">Button Label</label>
+                          <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide mb-1.5">
+                            {selectedElement.id.includes('social') ? 'Display Label' : 'Button Label'}
+                          </label>
                           <input
                             type="text"
                             value={currentButtonOverride?.text || text}
@@ -993,20 +1010,22 @@ export function InspectorSidebar({ isOpen = false, onClose, mobileDrawerMode }: 
                               updateButtonOverride(selectedElement.id, { text: e.target.value });
                             }}
                             className="input w-full"
-                            placeholder="Click Here"
+                            placeholder={selectedElement.id.includes('social') ? 'e.g. Instagram ↗' : 'Click Here'}
                           />
                         </div>
 
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide mb-1.5">Destination Link</label>
+                          <label className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide mb-1.5">
+                            {selectedElement.id.includes('social') ? 'Destination URL (Profile Link)' : 'Destination Link'}
+                          </label>
                           <input
                             type="text"
                             value={currentButtonOverride?.href || ''}
                             onChange={(e) => {
                               updateButtonOverride(selectedElement.id, { href: e.target.value });
                             }}
-                            className="input w-full"
-                            placeholder="https://wa.me/... or #contact"
+                            className="input w-full font-mono text-xs"
+                            placeholder={selectedElement.id.includes('social') ? 'https://instagram.com/yourhandle' : 'https://wa.me/... or #contact'}
                           />
                         </div>
 
@@ -1014,13 +1033,27 @@ export function InspectorSidebar({ isOpen = false, onClose, mobileDrawerMode }: 
                           <span className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide">Open in New Tab</span>
                           <input
                             type="checkbox"
-                            checked={currentButtonOverride?.openInNewTab || false}
+                            checked={currentButtonOverride?.openInNewTab ?? (selectedElement.id.includes('social') ? true : false)}
                             onChange={(e) => {
                               updateButtonOverride(selectedElement.id, { openInNewTab: e.target.checked });
                             }}
                             className="w-4 h-4 accent-accent cursor-pointer"
                           />
                         </div>
+                      </div>
+                    )}
+
+                    {/* Quick Navbar Social Links Manager when any navbar element is selected */}
+                    {(selectedElement.id.startsWith('creative-nav-') || selectedElement.id === 'premium-brand-name') && (
+                      <div className="border-t border-border-subtle pt-4 mt-2 flex flex-col gap-3">
+                        <div className="flex items-center gap-1.5 mb-1">
+                          <Share2 className="w-3.5 h-3.5 text-accent" />
+                          <span className="text-[11px] font-medium text-text-tertiary uppercase tracking-wide">Navbar Social Links</span>
+                        </div>
+                        <FormeNavbarSocialItemsList
+                          getButtonOverride={getButtonOverride}
+                          updateButtonOverride={updateButtonOverride}
+                        />
                       </div>
                     )}
 
@@ -2402,4 +2435,119 @@ function ContactCardsManagementPanel() {
 function BentoBioInspectorPanel() {
   // Replace the previous, more technical Bento inspector with the new visual BentoCustomizer.
   return <BentoCustomizer />;
+}
+
+function FormeNavbarSocialItemsList({
+  getButtonOverride,
+  updateButtonOverride,
+}: {
+  getButtonOverride: (key: string) => any;
+  updateButtonOverride: (key: string, overrides: any) => void;
+}) {
+  const socialChannels = [
+    { key: 'creative-nav-social-ig', defaultLabel: 'Instagram ↗', defaultHref: 'https://instagram.com', placeholder: 'https://instagram.com/username' },
+    { key: 'creative-nav-social-li', defaultLabel: 'LinkedIn ↗', defaultHref: 'https://linkedin.com', placeholder: 'https://linkedin.com/in/username' },
+    { key: 'creative-nav-social-tw', defaultLabel: 'X / Twitter ↗', defaultHref: 'https://x.com', placeholder: 'https://x.com/username' },
+    { key: 'creative-nav-social-db', defaultLabel: 'Dribbble ↗', defaultHref: 'https://dribbble.com', placeholder: 'https://dribbble.com/username' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-2.5">
+      {socialChannels.map((item) => {
+        const override = getButtonOverride(item.key);
+        const currentText = override?.text ?? item.defaultLabel;
+        const currentHref = override?.href ?? item.defaultHref;
+        const openInNewTab = override?.openInNewTab ?? true;
+
+        return (
+          <div key={item.key} className="flex flex-col gap-1.5 p-3 rounded-xl bg-bg-tertiary border border-border-subtle">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-bold text-text-primary uppercase tracking-wide">
+                {item.defaultLabel.replace(' ↗', '')}
+              </span>
+              <label className="flex items-center gap-1.5 text-[9px] text-text-quaternary cursor-pointer">
+                <span>New Tab</span>
+                <input
+                  type="checkbox"
+                  checked={openInNewTab}
+                  onChange={(e) => updateButtonOverride(item.key, { openInNewTab: e.target.checked })}
+                  className="w-3.5 h-3.5 accent-accent cursor-pointer"
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-1.5 pt-1">
+              <div className="flex flex-col gap-1">
+                <label className="text-[9px] font-medium text-text-tertiary uppercase tracking-wider">Display Label</label>
+                <input
+                  type="text"
+                  value={currentText}
+                  onChange={(e) => updateButtonOverride(item.key, { text: e.target.value })}
+                  className="input w-full text-xs"
+                  placeholder="e.g. Instagram ↗"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[9px] font-medium text-text-tertiary uppercase tracking-wider">Destination URL</label>
+                <input
+                  type="text"
+                  value={currentHref}
+                  onChange={(e) => updateButtonOverride(item.key, { href: e.target.value })}
+                  className="input w-full font-mono text-xs"
+                  placeholder={item.placeholder}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function FormeNavbarSocialManagementPanel() {
+  const [isOpen, setIsOpen] = useState(true);
+  const { getButtonOverride, updateButtonOverride } = useVisualBuilder();
+
+  return (
+    <div className="flex flex-col gap-3">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-4 py-3 bg-bg-tertiary hover:bg-bg-hover border border-border-subtle rounded-lg transition text-text-secondary group cursor-pointer"
+      >
+        <div className="flex items-center gap-2">
+          <Share2 className="w-4 h-4 text-accent shrink-0" />
+          <span className="text-[11px] font-semibold text-text-tertiary uppercase tracking-wider">
+            Navbar Social Links
+          </span>
+        </div>
+        <ChevronDown
+          className={`w-4 h-4 text-text-quaternary transition-transform duration-300 group-hover:text-text-tertiary ${
+            isOpen ? 'rotate-180 text-accent' : ''
+          }`}
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden flex flex-col gap-3 pt-1"
+          >
+            <p className="text-[9px] text-text-quaternary leading-normal px-1">
+              Customize the social media links and target URLs configured inside the header navigation drawer.
+            </p>
+
+            <FormeNavbarSocialItemsList
+              getButtonOverride={getButtonOverride}
+              updateButtonOverride={updateButtonOverride}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }

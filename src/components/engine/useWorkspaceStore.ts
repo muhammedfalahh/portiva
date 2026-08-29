@@ -28,8 +28,10 @@ export interface ProfileData {
 }
 
 export interface TemplateData {
+  templateId?: string;
   profileName: string;
   profileHandle: string;
+  activePageId?: string;
   blocks: BentoBlock[];
   theme: ThemeConfig;
   textColors: Record<string, string>;
@@ -55,7 +57,7 @@ export interface WorkspaceState {
   currentProjectId: string | null;
   builderMode: 'VIEWING' | 'EDITING';
   templateSearchQuery: string;
-  selectedCategory: 'all' | 'landing' | 'ecommerce' | 'portfolio';
+  selectedCategory: string;
   
   // Interactive canvas states
   hoveredElementId: string | null;
@@ -80,7 +82,7 @@ export interface WorkspaceState {
   setCurrentProjectId: (id: string | null) => void;
   setBuilderMode: (mode: 'VIEWING' | 'EDITING') => void;
   setTemplateSearchQuery: (query: string) => void;
-  setSelectedCategory: (category: 'all' | 'landing' | 'ecommerce' | 'portfolio') => void;
+  setSelectedCategory: (category: string) => void;
   
   // Interactive Mutators
   setHoveredElementId: (id: string | null) => void;
@@ -107,8 +109,10 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   selectedElement: null,
   canvasZoom: 1.0,
   templateData: {
+    templateId: undefined,
     profileName: '',
     profileHandle: '',
+    activePageId: undefined,
     blocks: [],
     theme: {
       background: '#0c0c0e',

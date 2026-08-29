@@ -11,8 +11,6 @@ import {
   Shield,
   Layers,
   Sparkles,
-  ChevronRight,
-  Check,
   MousePointerClick,
 } from 'lucide-react';
 
@@ -43,40 +41,40 @@ const staggerChild = {
 const features = [
   {
     icon: Palette,
-    title: 'Beautiful Templates',
-    description: 'Start with professionally designed templates. Customize every detail to match your brand perfectly.',
+    title: 'Free + Pro Templates',
+    description: 'Start free with curated single-page templates, then upgrade to premium multi-page websites built for real business use.',
   },
   {
     icon: MousePointerClick,
-    title: 'Visual Editor',
-    description: 'Edit text, images, and layouts directly on the canvas. What you see is what your visitors see.',
+    title: 'Visual Page Editor',
+    description: 'Edit text, images, buttons, styles, and page-specific content directly on canvas with live preview.',
   },
   {
     icon: Globe,
-    title: 'Instant Publishing',
-    description: 'Go live in one click. Your site is delivered globally via edge CDN for blazing-fast load times.',
+    title: 'Publish Fast',
+    description: 'Launch polished micro-websites quickly with production-ready routing, responsive layouts, and edge delivery.',
   },
   {
     icon: Layers,
-    title: 'Bento Grid Layouts',
-    description: 'Create stunning grid-based layouts that adapt beautifully across desktop, tablet, and mobile.',
+    title: 'Niche Website Systems',
+    description: 'Creator, commerce, hospitality, automotive, education, beauty, fitness, and real-estate templates with stronger information architecture.',
   },
   {
     icon: Shield,
-    title: 'Built-in Safety',
-    description: 'Automatic content moderation and safety checks keep your site and visitors protected.',
+    title: 'Editor Safety First',
+    description: 'Theme controls, editable media, and protected builder architecture keep customization powerful without breaking structure.',
   },
   {
     icon: Sparkles,
-    title: 'Smart Storefronts',
-    description: 'Connect WhatsApp for instant commerce. Display products with prices and one-tap ordering.',
+    title: 'Upgrade Path Built In',
+    description: 'Premium template metadata, page counts, and future subscription gating are ready without fake billing flows.',
   },
 ];
 
 const steps = [
-  { number: '01', title: 'Pick a Template', description: 'Choose from our curated collection of premium designs.' },
-  { number: '02', title: 'Customize Everything', description: 'Edit text, swap images, adjust colors — all visually.' },
-  { number: '03', title: 'Publish & Share', description: 'Go live instantly with your custom portiva.in link.' },
+  { number: '01', title: 'Choose Free or Pro', description: 'Pick fast free templates or multi-page premium website systems by niche.' },
+  { number: '02', title: 'Edit Page by Page', description: 'Customize text, media, buttons, colors, and layout in visual builder.' },
+  { number: '03', title: 'Publish with Clarity', description: 'Launch a serious micro-website instead of a generic link page.' },
 ];
 
 // ─── Landing Page Component ──────────────────────────────────────────────────
@@ -112,11 +110,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-bg-primary text-text-primary font-sans relative overflow-hidden flex flex-col">
-      {/* ═══ Ambient Background ═══ */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute top-[-20%] left-[20%] w-[600px] h-[600px] bg-accent/[0.06] rounded-full blur-[160px]" />
-        <div className="absolute bottom-[10%] right-[10%] w-[500px] h-[500px] bg-purple-600/[0.04] rounded-full blur-[140px]" />
-      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
           NAVIGATION
@@ -171,81 +164,53 @@ export default function Home() {
           HERO SECTION
           ═══════════════════════════════════════════════════════════════════ */}
       <section className="relative flex-1">
-        <div className="max-w-5xl mx-auto px-6 pt-24 sm:pt-32 pb-20 flex flex-col items-center text-center">
-          {/* Announcement Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 badge badge-accent mb-8 hover:bg-accent-muted transition-colors group"
-            >
-              <Zap className="w-3 h-3" />
-              <span>Now with visual editing</span>
-              <ChevronRight className="w-3 h-3 opacity-60 group-hover:translate-x-0.5 transition-transform" />
-            </a>
-          </motion.div>
-
-          {/* Headline */}
+        <div className="max-w-4xl mx-auto px-6 pt-28 sm:pt-36 pb-20 flex flex-col items-center text-center">
+          {/* Headline — emphasis through weight, not gradient */}
           <motion.h1
-            className="text-5xl sm:text-6xl lg:text-7xl font-display font-extrabold tracking-tight leading-[1.05] max-w-4xl mb-6"
-            initial={{ opacity: 0, y: 20 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-display font-extrabold tracking-[-0.03em] leading-[1.08] max-w-3xl mb-6"
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            Build a stunning website{' '}
-            <span className="gradient-brand-text">in minutes</span>
+            Build niche websites with free and premium templates
           </motion.h1>
 
           {/* Subtitle */}
           <motion.p
-            className="text-lg sm:text-xl text-text-secondary font-medium max-w-2xl leading-relaxed mb-10"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg sm:text-xl text-text-secondary max-w-xl leading-relaxed mb-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
           >
-            Create beautiful portfolios, storefronts, and link-in-bio pages
-            with our visual editor. No code needed — publish instantly.
+            Portiva is a visual micro-website builder for creators and businesses.
+            Start free, upgrade to multi-page templates, and publish without code.
           </motion.p>
 
-          {/* CTA Group */}
+          {/* CTA Group — claim handle is the conversion action */}
           <motion.div
-            className="flex flex-col sm:flex-row items-center gap-3 mb-16"
-            initial={{ opacity: 0, y: 16 }}
+            className="flex flex-col sm:flex-row items-center gap-3 mb-12"
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
           >
             <Link href="#claim" className="btn btn-primary btn-lg shadow-glow">
-              Start Building — Free
+              Claim Your Handle
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link href="/dashboard" className="btn btn-secondary btn-lg">
-              View Templates
+              Browse Templates
             </Link>
           </motion.div>
 
-          {/* Social Proof */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-6 text-sm text-text-tertiary"
+          {/* Trust line — concrete, not repeating the headline */}
+          <motion.p
+            className="text-sm text-text-quaternary"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
           >
-            <div className="flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-success" />
-              <span>Free to start</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-success" />
-              <span>No credit card</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <Check className="w-4 h-4 text-success" />
-              <span>Publish in 60 seconds</span>
-            </div>
-          </motion.div>
+            No credit card required · Free plan available · Publishes in seconds
+          </motion.p>
         </div>
 
         {/* ═══════════════════════════════════════════════════════════════════

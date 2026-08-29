@@ -7,6 +7,8 @@ import { InspectorSidebar } from './InspectorSidebar';
 import { ZoomControls } from './ZoomControls';
 import { Eye, Pencil, Monitor, Smartphone, ArrowLeft, Play, Sliders, Undo2, Redo2, ExternalLink } from 'lucide-react';
 import { motion, MotionConfig } from 'framer-motion';
+import { getPageSummaries } from '@/components/templates/platform';
+import type { TemplateManifestPage } from '@/lib/template-contract';
 
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
@@ -21,11 +23,37 @@ export function WorkspaceLayout({
   isPublishing,
   onBack,
 }: WorkspaceLayoutProps) {
-  const { mode, setMode, templateData, hoveredRect, selectedRect, undo, redo, canUndo, canRedo } = useVisualBuilder();
+  const { mode, setMode, templateData, hoveredRect, selectedRect, undo, redo, canUndo, canRedo, setTemplateData } = useVisualBuilder();
   const canvasZoom = useWorkspaceStore((s) => s.canvasZoom);
+   const currentProjectId = useWorkspaceStore((s) => s.currentProjectId);
+   const projectsList = useWorkspaceStore((s) => s.projectsList);
+   const activeProject = projectsList.find((project) => project.id === currentProjectId) || null;
+   const activeTemplateId = activeProject?.templateId ?? null;
   const [canvasViewMode, setCanvasViewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCanvasHovered, setIsCanvasHovered] = useState(false);
+
+  // Page summaries resolve through the platform (manifest first, definition
+  // fallback), so the switcher works for every premium template without
+  // pulling template implementations into the engine bundle.
+  const [activePages, setActivePages] = useState<TemplateManifestPage[]>([]);
+  useEffect(() => {
+    let alive = true;
+    if (!activeTemplateId) {
+      setActivePages([]);
+      return;
+    }
+    getPageSummaries(activeTemplateId)
+      .then((pages) => {
+        if (alive) setActivePages(pages);
+      })
+      .catch(() => {
+        if (alive) setActivePages([]);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [activeTemplateId]);
 
   const isEditing = mode === 'EDITING';
 
@@ -112,6 +140,32 @@ export function WorkspaceLayout({
           )}
 
           {isEditing && <div className="w-px h-4 bg-border-subtle mx-1 hidden xs:block" />}
+
+          {activePages.length > 0 && (
+            <div className="hidden lg:flex items-center gap-2 rounded-full border border-border-subtle bg-bg-secondary px-2 py-1">
+              <span className="px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-text-tertiary">Pages</span>
+              <select
+                value={templateData.activePageId || activePages[0]?.id || ''}
+                onChange={(event) =>
+                  setTemplateData((prev) => ({
+                    ...prev,
+                    activePageId: event.target.value,
+                    textOverrides: {
+                      ...(prev.textOverrides || {}),
+                      'template-page-activePageId': event.target.value,
+                    },
+                  }))
+                }
+                className="rounded-full border border-border-subtle bg-bg-primary px-3 py-1.5 text-xs font-medium text-text-primary outline-none"
+              >
+                {activePages.map((page) => (
+                  <option key={page.id} value={page.id}>
+                    {page.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Mode Toggle */}
           <div className="glass-light p-1 rounded-full flex items-center gap-1">
@@ -296,7 +350,7 @@ export function WorkspaceLayout({
             )}
 
             {/* Scrollable Web Page Canvas */}
-            <div className="flex-1 w-full overflow-y-auto overflow-x-hidden relative">
+            <div className="canvas-container flex-1 w-full overflow-y-auto overflow-x-hidden relative">
               <div className="w-full min-h-full">
                 <MotionConfig reducedMotion={isEditing ? 'always' : 'user'}>
                   {children}

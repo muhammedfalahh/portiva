@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Plus_Jakarta_Sans, Outfit, Geist_Mono, Cormorant_Garamond, Instrument_Serif } from 'next/font/google';
+import { Plus_Jakarta_Sans, Outfit, Geist_Mono, Cormorant_Garamond, Instrument_Serif, Manrope, Inter } from 'next/font/google';
 import './globals.css';
 
 // ─── Font Configuration ─────────────────────────────────────────────────────
@@ -17,6 +17,22 @@ const outfit = Outfit({
   subsets: ['latin'],
   display: 'swap',
   weight: ['400', '500', '600', '700', '800', '900'],
+});
+
+// Manrope — Automotive heading font: bold, wide, confident
+const manrope = Manrope({
+  variable: '--font-manrope',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800'],
+});
+
+// Inter — Clean modern UI / body font
+const inter = Inter({
+  variable: '--font-inter',
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 // Geist Mono — Code / monospace font: clean developer aesthetic
@@ -102,7 +118,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${jakarta.variable} ${outfit.variable} ${geistMono.variable} ${cormorant.variable} ${instrument.variable} h-full antialiased`}
+      className={`${jakarta.variable} ${outfit.variable} ${manrope.variable} ${inter.variable} ${geistMono.variable} ${cormorant.variable} ${instrument.variable} h-full antialiased`}
       style={{ colorScheme: 'dark' }}
     >
       <body className="min-h-full flex flex-col bg-bg-primary text-text-primary">

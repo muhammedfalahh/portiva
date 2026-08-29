@@ -61,8 +61,10 @@ export interface BentoBlock {
 }
 
 export interface TemplateData {
+  templateId?: string;
   profileName: string;
   profileHandle: string;
+  activePageId?: string;
   blocks: BentoBlock[];
   theme: ThemeConfig;
   textColors: Record<string, string>;
@@ -420,10 +422,20 @@ export function VisualBuilderProvider({
           [textKey]: newValue,
         };
 
-        if (id === 'profile-header') {
-          if (field === 'profileName') updatedProfileName = newValue;
-          if (field === 'profileHandle') updatedProfileHandle = newValue;
-        } else {
+      if (id === 'profile-header') {
+        if (field === 'profileName') updatedProfileName = newValue;
+        if (field === 'profileHandle') updatedProfileHandle = newValue;
+      } else if (id === 'template-page') {
+        if (field === 'activePageId') {
+          return {
+            ...prev,
+            activePageId: newValue,
+            textColors: updatedTextColors,
+            textOverrides: updatedTextOverrides,
+          };
+        }
+      } else {
+
           updatedBlocks = updatedBlocks.map((block) => {
             if (block.id === id) {
               return {
@@ -756,8 +768,10 @@ export function useVisualBuilder() {
       setHoveredRect: () => {},
       setSelectedRect: () => {},
       templateData: {
+        templateId: undefined,
         profileName: 'Bruno Erdison',
         profileHandle: 'bruno',
+        activePageId: undefined,
         theme: {
           background: '#F7F4EB',
           foreground: '#0A3C2F',

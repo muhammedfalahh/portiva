@@ -39,20 +39,17 @@ import type { ButtonOverride } from '@/lib/theme.types';
 // ─── Props ──────────────────────────────────────────────────────────────────
 
 interface EditableButtonProps {
-  /** Unique identifier for this button across the entire template */
   buttonKey: string;
-  /** Default button label text when no override exists */
   defaultText: string;
-  /** Default link destination (renders as <a> in VIEW mode) */
   defaultHref?: string;
-  /** Whether the link opens in a new tab by default */
   defaultOpenInNewTab?: boolean;
-  /** Extra Tailwind/CSS classes applied to the outer element */
   className?: string;
-  /** Default inline styles applied before any overrides */
   defaultStyle?: React.CSSProperties;
-  /** Optional custom child content (rendered instead of text label) */
   children?: React.ReactNode;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
+  contentClassName?: string;
+  onViewClick?: (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void;
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -114,6 +111,10 @@ export function EditableButton({
   className = '',
   defaultStyle,
   children,
+  leadingIcon,
+  trailingIcon,
+  contentClassName = 'inline-flex items-center gap-2',
+  onViewClick,
 }: EditableButtonProps) {
   const {
     mode,
@@ -267,6 +268,10 @@ export function EditableButton({
 
   // ─── Shared props ───────────────────────────────────────────────────
 
+  const handleViewClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+    onViewClick?.(e);
+  };
+
   const sharedProps = {
     ref: elementRef as React.Ref<HTMLAnchorElement & HTMLButtonElement>,
     style: activeStyle,
@@ -277,10 +282,16 @@ export function EditableButton({
     `,
     onMouseEnter: isEditing ? handleMouseEnter : handleViewMouseEnter,
     onMouseLeave: isEditing ? handleMouseLeave : handleViewMouseLeave,
-    onClick: isEditing ? handleClick : undefined,
+    onClick: isEditing ? handleClick : handleViewClick,
   };
 
-  const content = children || resolvedText;
+  const content = children || (
+    <span className={contentClassName}>
+      {leadingIcon}
+      <span>{resolvedText}</span>
+      {trailingIcon}
+    </span>
+  );
 
   // ─── Render ─────────────────────────────────────────────────────────
 

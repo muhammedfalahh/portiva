@@ -490,11 +490,46 @@ export const MENTROX_THEME: ThemeConfig = {
   accentHover: '#5B7AFF',
 };
 
+/** AutoBahn Pro preset — Midnight Navy & Performance Red */
+export const AUTOBAHN_THEME: ThemeConfig = {
+  primary: '#C62828',
+  primaryHover: '#E53935',
+  background: '#07111F',
+  surface: '#182330',
+  surfaceHover: '#1E2C3D',
+  foreground: '#F8FAFC',
+  muted: '#AEB8C2',
+  border: '#304050',
+  accent: '#3FA66B',
+  accentHover: '#4BB577',
+};
+
+/** Meridian Atelier preset — Burnt Terracotta, Warm Linen & Deep Espresso */
+export const MERIDIAN_TERRACOTTA_THEME: ThemeConfig = {
+  primary: '#CD572B',
+  primaryHover: '#B5451B',
+  background: '#FAF8F5',
+  surface: '#FFFFFF',
+  surfaceHover: '#F4EFEA',
+  foreground: '#1F1A17',
+  muted: '#7A7269',
+  border: 'rgba(31, 26, 23, 0.12)',
+  accent: '#CD572B',
+  accentHover: '#B5451B',
+  cardBg: '#FFFFFF',
+  cardText: '#1F1A17',
+  cardMuted: '#7A7269',
+  heroBg: '#CD572B',
+  heroText: '#FFFFFF',
+};
+
 /**
  * Unified list of curated theme presets.
  * Shared between the engine, InspectorSidebar, and database defaults.
  */
 export const THEME_PRESETS_LIST: (ThemeConfig & { id: string; name: string })[] = [
+  { id: 'meridian', name: 'Meridian Atelier (Terracotta & Espresso)', ...MERIDIAN_TERRACOTTA_THEME },
+  { id: 'autobahn', name: 'AutoBahn Pro (Midnight Navy & Performance Red)', ...AUTOBAHN_THEME },
   { id: 'mentorx', name: 'Mentrox Executive (Obsidian & Electric Blue)', ...MENTROX_THEME },
   { id: 'apexfit', name: 'Apex Fit (Acid Lime & Deep Charcoal)', ...APEX_FIT_THEME },
   { id: 'aurasalon', name: 'Aura Salon (Couture Ivory & Rose Gold)', ...AURA_SALON_THEME },

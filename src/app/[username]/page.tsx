@@ -32,17 +32,8 @@
 import { notFound } from 'next/navigation';
 import { createServiceClient } from '@/lib/supabase/server';
 import type { BlockContent, GridPosition, SubscriptionTier, InventoryStatus } from '@/lib/database.types';
-import { SnapMaster } from '@/components/templates/SnapMaster';
-import { LuxeUniversal } from '@/components/templates/LuxeUniversal';
-import { CafeCloud } from '@/components/templates/CafeCloud';
-import { AutoDrive } from '@/components/templates/AutoDrive';
-import { AuraSalon } from '@/components/templates/AuraSalon';
-import { EstatePrime } from '@/components/templates/EstatePrime';
-import { MentorX } from '@/components/templates/MentorX';
-import { StudioNova } from '@/components/templates/StudioNova';
-import { ApexFit } from '@/components/templates/ApexFit';
-import { BentoBio } from '@/components/templates/BentoBio';
-import { PublicTemplateViewer } from '@/components/engine';
+import { PublicTemplateViewer } from '@/components/engine/PublicTemplateViewer';
+import { renderTemplateRoute } from './route-renderer';
 
 // ─── ISR Configuration ──────────────────────────────────────────────────────
 // Serve cached HTML for 60 seconds, then revalidate in the background.
@@ -149,90 +140,15 @@ export default async function ProfilePage({
     profile = null;
   }
 
-  // If profile is not found in database (e.g. demo handles or local dev handles),
-  // render the SnapMaster universal portfolio template directly instead of 404!
   if (!profile) {
-    if (lowercaseHandle.includes('luxe') || lowercaseHandle === 'valkyrie' || lowercaseHandle === 'valkyrieluxe') {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <LuxeUniversal brandName="VALKYRIE" />
-        </PublicTemplateViewer>
-      );
+    const renderedTemplate = await renderTemplateRoute(lowercaseHandle);
+    if (renderedTemplate) {
+      return renderedTemplate;
     }
-
-    if (lowercaseHandle === 'cafedemo' || lowercaseHandle === 'artisankitchen' || lowercaseHandle.includes('cafe') || lowercaseHandle.includes('kitchen')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <CafeCloud brandName="THE ARTISAN KITCHEN" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'autobahnpremium' || lowercaseHandle.includes('autobahn') || lowercaseHandle.includes('autodrive')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <AutoDrive dealershipName="AUTOBAHN PREMIUM" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'aurasalon' || lowercaseHandle.includes('aura') || lowercaseHandle.includes('salon') || lowercaseHandle.includes('bridal')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <AuraSalon artistName="Ananya Sharma" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'estateprime' || lowercaseHandle.includes('estate') || lowercaseHandle.includes('vance') || lowercaseHandle.includes('realty')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <EstatePrime brandName="VANCE PRIVATE ESTATES" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'studionova' || lowercaseHandle === 'studio_nova' || lowercaseHandle.includes('studio') || lowercaseHandle.includes('nova')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <StudioNova studioName="Studio Nova" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'apexfit' || lowercaseHandle.includes('apex') || lowercaseHandle.includes('fit')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <ApexFit trainerName="Coach Marcus" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'mentorx' || lowercaseHandle.includes('mentor') || lowercaseHandle.includes('educator') || lowercaseHandle.includes('tutor')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <MentorX instructorName="Dr. Alex Rivera" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    if (lowercaseHandle === 'bentobio' || lowercaseHandle.includes('bento') || lowercaseHandle.includes('bio')) {
-      return (
-        <PublicTemplateViewer handle={lowercaseHandle}>
-          <BentoBio name="Avery Stone" />
-        </PublicTemplateViewer>
-      );
-    }
-
-    return (
-      <PublicTemplateViewer handle={lowercaseHandle}>
-        <SnapMaster
-          fullName={lowercaseHandle === 'bruno' ? 'Bruno Erdison' : 'Alex Morgan'}
-          handle={lowercaseHandle}
-        />
-      </PublicTemplateViewer>
-    );
+    notFound();
   }
+
+  const resolvedProfile = profile;
 
   // ── Step 2: Parallel data fetch for blocks and inventory ──────────────
   // Promise.all ensures both queries execute concurrently, reducing
@@ -241,12 +157,12 @@ export default async function ProfilePage({
     supabase
       .from('bento_blocks')
       .select('id, block_type, content, grid_position, order_index')
-      .eq('profile_id', profile.id)
+      .eq('profile_id', resolvedProfile.id)
       .order('order_index', { ascending: true }),
     supabase
       .from('dealership_inventory')
       .select('id, title, price, mileage, status, image_urls')
-      .eq('profile_id', profile.id)
+      .eq('profile_id', resolvedProfile.id)
       .order('created_at', { ascending: false }),
   ]);
 
@@ -261,13 +177,13 @@ export default async function ProfilePage({
         <header className="w-full max-w-4xl flex flex-col items-center mb-12">
           {/* Avatar: Gradient initial circle */}
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center font-bold text-3xl shadow-2xl mb-4 text-text-primary ring-4 ring-accent/20">
-            {profile.full_name.charAt(0).toUpperCase()}
+            {resolvedProfile.full_name.charAt(0).toUpperCase()}
           </div>
           <h1 className="text-3xl font-black tracking-tight">
-            {profile.full_name}
+            {resolvedProfile.full_name}
           </h1>
           <p className="text-accent-hover font-medium text-sm mt-1">
-            @{profile.handle}
+            @{resolvedProfile.handle}
           </p>
         </header>
 
@@ -358,7 +274,7 @@ export default async function ProfilePage({
           })}
 
           {/* ─── Dealership Inventory Cards ─── */}
-          {profile.subscription_tier === 'business' &&
+          {resolvedProfile.subscription_tier === 'business' &&
             inventory.map((car) => (
               <div
                 key={car.id}
@@ -423,7 +339,7 @@ export default async function ProfilePage({
         </div>
 
         {/* ═══ Free Tier Branding Footer ═══ */}
-        {profile.subscription_tier === 'free' && (
+        {resolvedProfile.subscription_tier === 'free' && (
           <footer className="mt-16 text-center z-10">
             <a
               href="https://portiva.in"
