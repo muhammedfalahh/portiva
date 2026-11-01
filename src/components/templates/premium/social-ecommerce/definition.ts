@@ -293,18 +293,18 @@ export const socialEcommerceDefinition: PremiumTemplateDefinition = {
             },
             {
               id: 'hero-card-2',
-              label: 'Kids',
+              label: 'Chocolates',
               value: 'Autumn Frock',
             },
             {
               id: 'hero-card-3',
-              label: 'Footwear',
+              label: 'Shoe',
               value: 'Purple Sneakers',
             },
           ],
           media: img(
             'meridian-hero-women',
-            UNSPLASH('photo-1515886657613-9f3515b0c78f', 800),
+            UNSPLASH('photo-1496747611176-843222e1e57c', 800),
             'Fashion model holding bags in soft pink dress',
           ),
         },

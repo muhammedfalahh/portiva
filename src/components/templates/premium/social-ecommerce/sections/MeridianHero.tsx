@@ -5,14 +5,14 @@
  * PORTIVA: Meridian Commerce Pro - Reference Hero
  * =============================================================================
  *
- * Reproduces the supplied Nest storefront composition: a restrained editorial
- * statement, compact social proof, three pastel product cards with frosted
- * purchase rails, and a monochrome partner strip. All customer-facing copy,
- * card surfaces, images, and actions remain available to the visual builder.
+ * Pixel-perfect reproduction of the reference Nest storefront hero section:
+ * - Headline typography ("Sustainably Stylish. Naturally You") with inline pill CTA.
+ * - Customer review stack and editorial quote with horizontal accent rule.
+ * - Three pastel category bento cards with frosted floating purchase rails.
+ * - High-fidelity partner logo ribbon across the base.
  */
 
 import { motion } from 'framer-motion';
-import { ShoppingBag } from 'lucide-react';
 import { EditableButton } from '@/components/engine/EditableButton';
 import { EditableElement } from '@/components/engine/EditableElement';
 import { EditableImage } from '@/components/engine/EditableImage';
@@ -23,6 +23,7 @@ import type {
   PremiumTemplateSection,
 } from '@/lib/template-contract';
 import { parsePrice, useMeridianCart } from './cart';
+import styles from './MeridianLanding.module.css';
 
 interface MeridianHeroProps {
   section: Extract<PremiumTemplateSection, { type: 'hero' }>;
@@ -39,7 +40,7 @@ interface HeroCard {
   tag: string;
   title: string;
   price: string;
-  surfaceClassName: string;
+  cardClassName: string;
   imageKey: string;
   imageSrc: string;
   imageAlt: string;
@@ -47,72 +48,119 @@ interface HeroCard {
   imageClassName: string;
 }
 
+function BasketIcon({ className = 'h-5 w-5' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M4 10h16l-1.5 9.5a2 2 0 0 1-2 1.5H7.5a2 2 0 0 1-2-1.5L4 10Z" />
+      <path d="m9 10 3-6 3 6" />
+      <path d="M10 14v4M14 14v4" />
+    </svg>
+  );
+}
+
 const REVIEWERS = [
   {
     key: 'meridian-reviewer-one',
     src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=160&auto=format&fit=crop',
-    alt: 'Meridian customer portrait',
+    alt: 'Customer avatar 1',
   },
   {
     key: 'meridian-reviewer-two',
     src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=160&auto=format&fit=crop',
-    alt: 'Meridian customer portrait',
+    alt: 'Customer avatar 2',
   },
   {
     key: 'meridian-reviewer-three',
     src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=160&auto=format&fit=crop',
-    alt: 'Meridian customer portrait',
+    alt: 'Customer avatar 3',
   },
 ] as const;
 
 const PARTNER_MARKS = [
   {
     id: 'graphic-studio',
-    label: 'Graphic Studio',
+    labelLine1: 'GRAPHIC',
+    labelLine2: 'STUDIO',
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-        <path d="m18 2 14 8v16l-14 8L4 26V10L18 2Z" />
-        <path d="m18 2 8 14-8 18-8-18L18 2Zm-14 8 14 6 14-6M4 26l14-10 14 10" />
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.3" className="h-9 w-9" aria-hidden="true">
+        {/* Faceted geometric icosahedron / multifaceted hexagon */}
+        <polygon points="20,3 36,12 36,28 20,37 4,28 4,12" />
+        <line x1="20" y1="3" x2="20" y2="37" />
+        <line x1="4" y1="12" x2="36" y2="28" />
+        <line x1="4" y1="28" x2="36" y2="12" />
+        <line x1="20" y1="3" x2="4" y2="28" />
+        <line x1="20" y1="3" x2="36" y2="28" />
+        <line x1="20" y1="37" x2="4" y2="12" />
+        <line x1="20" y1="37" x2="36" y2="12" />
       </svg>
     ),
   },
   {
     id: 'salva-art',
-    label: 'S. Salva Art Director',
+    labelLine1: 'S. SALVA',
+    labelLine2: 'ART DIRECTOR',
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-        <circle cx="18" cy="18" r="15" />
-        <path d="M8 9c8 5 12 13 20 18M28 9c-8 5-12 13-20 18M5 18h26" />
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25" className="h-9 w-9" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" />
+        <line x1="8" y1="32" x2="32" y2="8" strokeWidth="1.2" />
+        <text x="13" y="19" fill="currentColor" stroke="none" fontSize="8.5" fontWeight="bold" fontFamily="serif" textAnchor="middle">S</text>
+        <text x="27" y="31" fill="currentColor" stroke="none" fontSize="8.5" fontWeight="bold" fontFamily="serif" textAnchor="middle">A</text>
       </svg>
     ),
   },
   {
     id: 'golden-studio',
-    label: 'Golden Studio',
+    labelLine1: 'GOLDEN',
+    labelLine2: 'STUDIO',
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-        <path d="M5 10 18 3l13 7v17l-13 6-13-6V10Z" />
-        <path d="M9 14h18v10H9zM12 11h12M12 27h12" />
+      <svg viewBox="0 0 84 40" fill="none" stroke="currentColor" strokeWidth="1.25" className="h-9 w-20" aria-hidden="true">
+        {/* Hexagonal studio seal */}
+        <polygon points="12,4 72,4 82,20 72,36 12,36 2,20" />
+        <polygon points="15,8 69,8 77,20 69,32 15,32 7,20" strokeWidth="0.8" />
+        <line x1="18" y1="12" x2="66" y2="12" strokeWidth="0.75" />
+        <line x1="18" y1="28" x2="66" y2="28" strokeWidth="0.75" />
+        <path d="M28 17h28M28 23h28" />
       </svg>
     ),
   },
   {
     id: 'furniture-design',
-    label: 'Furniture Design',
+    labelLine1: 'FURNITURE',
+    labelLine2: 'DESIGN',
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-        <path d="m18 3 13 8v14l-13 8-13-8V11l13-8Z" />
-        <path d="m5 11 13 8 13-8M18 19v14M9 14v14M27 14v14" />
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.3" className="h-9 w-9" aria-hidden="true">
+        {/* Isometric 3D slatted cube */}
+        <path d="M20 4 L36 13 L20 22 L4 13 Z" />
+        <path d="M4 13 L4 27 L20 36 L20 22 Z" />
+        <path d="M36 13 L36 27 L20 36 L20 22 Z" />
+        <line x1="4" y1="16.5" x2="20" y2="25.5" strokeWidth="0.9" />
+        <line x1="4" y1="20" x2="20" y2="29" strokeWidth="0.9" />
+        <line x1="4" y1="23.5" x2="20" y2="32.5" strokeWidth="0.9" />
+        <line x1="20" y1="25.5" x2="36" y2="16.5" strokeWidth="0.9" />
+        <line x1="20" y1="29" x2="36" y2="20" strokeWidth="0.9" />
+        <line x1="20" y1="32.5" x2="36" y2="23.5" strokeWidth="0.9" />
       </svg>
     ),
   },
   {
     id: 'travel-lookbook',
-    label: 'Travel Lookbook',
+    labelLine1: 'TRAVEL',
+    labelLine2: 'LOOKBOOK',
     icon: (
-      <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.25" aria-hidden="true">
-        <path d="m18 2 6 5 8 3 2 8-2 8-8 3-6 5-6-5-8-3-2-8 2-8 8-3 6-5Z" />
-        <path d="M13 12h10M18 12v13" />
+      <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="1.25" className="h-9 w-9" aria-hidden="true">
+        {/* 8-pointed diamond star seal with letter T */}
+        <polygon points="20,2 25,12 36,8 30,19 38,28 27,27 20,38 13,27 2,28 10,19 4,8 15,12" />
+        <circle cx="20" cy="20" r="10" strokeWidth="0.9" />
+        <text x="20" y="24" fill="currentColor" stroke="none" fontSize="11" fontWeight="bold" fontFamily="serif" textAnchor="middle">T</text>
       </svg>
     ),
   },
@@ -148,16 +196,16 @@ export function MeridianHero({
   const handleActionNavigation =
     (pageId: string | undefined) =>
     (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
-      if (!pageId || !onNavigate || mode !== 'builder') return;
+      if (!pageId || mode !== 'builder') return;
       event.preventDefault();
-      onNavigate(pageId);
+      onNavigate?.(pageId);
     };
 
   const reveal = (delay: number) =>
     reducedMotion
       ? {}
       : {
-          initial: { opacity: 0, y: 14 },
+          initial: false as const,
           animate: { opacity: 1, y: 0 },
           transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] as const },
         };
@@ -168,47 +216,43 @@ export function MeridianHero({
       tag: section.stats?.[0]?.label || 'Women',
       title: section.stats?.[0]?.value || 'Pink Fashion',
       price: '$42.00',
-      surfaceClassName: 'bg-pink-50',
+      cardClassName: styles.cardPink,
       imageKey: section.media?.key || 'meridian-hero-card-one',
       imageSrc:
         section.media?.src ||
-        'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=800&auto=format&fit=crop',
       imageAlt: section.media?.alt || 'Fashion model in a soft pink outfit',
-      imageContainerClassName:
-        'absolute inset-y-0 right-0 w-[78%] [mask-image:linear-gradient(to_right,transparent_0%,black_24%)]',
-      imageClassName:
-        'object-cover object-[58%_center] mix-blend-multiply transition-transform duration-500 group-hover:scale-[1.025]',
+      imageContainerClassName: styles.modelImage,
+      imageClassName: styles.modelImageElement,
     },
     {
       id: 'two',
-      tag: section.stats?.[1]?.label || 'Kids',
+      tag: section.stats?.[1]?.label || 'Chocolates',
       title: section.stats?.[1]?.value || 'Autumn Frock',
       price: '$56.00',
-      surfaceClassName: 'bg-lime-100',
+      cardClassName: styles.cardLime,
       imageKey: 'meridian-hero-card-two',
       imageSrc:
-        'https://images.unsplash.com/photo-1508807526345-15e9b5f4eaff?q=80&w=800&auto=format&fit=crop',
+        'https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?q=80&w=800&auto=format&fit=crop',
       imageAlt: 'Child in a bright yellow autumn outfit',
-      imageContainerClassName:
-        'absolute inset-y-0 right-0 w-[78%] [mask-image:linear-gradient(to_right,transparent_0%,black_22%)]',
-      imageClassName:
-        'object-cover object-[55%_center] mix-blend-multiply transition-transform duration-500 group-hover:scale-[1.025]',
+      imageContainerClassName: styles.modelImage,
+      imageClassName: styles.modelImageElement,
     },
     {
       id: 'three',
       tag: section.stats?.[2]?.label || 'Shoe',
       title: section.stats?.[2]?.value || 'Purple Sneakers',
       price: '$80.00',
-      surfaceClassName: 'bg-violet-100',
+      cardClassName: styles.cardLilac,
       imageKey: 'meridian-hero-card-three',
       imageSrc:
-        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop',
+        'https://pngimg.com/uploads/running_shoes/running_shoes_PNG5816.png',
       imageAlt: 'Sculpted athletic sneaker',
-      imageContainerClassName: 'absolute right-[-7%] top-[17%] h-[65%] w-[82%]',
-      imageClassName:
-        'object-contain mix-blend-multiply hue-rotate-[235deg] saturate-50 transition-transform duration-500 group-hover:scale-[1.04]',
+      imageContainerClassName: styles.shoeImage,
+      imageClassName: styles.shoeImageElement,
     },
   ];
+
   const headlineWords = section.title.trim().split(/\s+/);
   const headlineFirstLine = headlineWords[0] || 'Sustainably';
   const headlineLastLine = headlineWords.length > 1 ? headlineWords.at(-1) || '' : '';
@@ -239,35 +283,46 @@ export function MeridianHero({
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-theme-surface text-theme-foreground">
-      <div className="relative mx-auto w-full max-w-[1280px] px-5 pb-14 pt-12 sm:px-8 sm:pb-20 sm:pt-20 lg:px-0 lg:pb-24 lg:pt-28">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-end">
-          <motion.div {...reveal(0)} className="min-w-0 font-sans text-[clamp(3rem,6vw,5rem)] leading-[0.99] tracking-[-0.04em]">
-            <h1 className="min-w-0">
+    <EditableElement
+      as="section"
+      id={section.id}
+      field="background"
+      value=""
+      type="section"
+      className={styles.hero}
+    >
+      <div className={styles.heroFrame}>
+        {/* ── Top Row: Headline (Left) & Social Proof / Quote (Right) ───── */}
+        <div className={styles.heroTop}>
+          {/* Left: Editorial Headline & Inline Pill CTA */}
+          <motion.div {...reveal(0)} className={styles.headlineBlock}>
+            <h1 className={styles.headline}>
               <EditableElement
                 as="span"
                 id={`${section.id}-headline-word-1`}
                 field="value"
                 value={headlineFirstLine}
-                className="block break-words font-light text-theme-foreground/90 [overflow-wrap:anywhere]"
+                className={styles.headlineLight}
               />
               <EditableElement
                 as="span"
                 id={`${section.id}-headline-word-2`}
                 field="value"
                 value={headlineSecondLine}
-                className="mt-2 block break-words font-extrabold text-theme-foreground [overflow-wrap:anywhere]"
+                className={styles.headlineBold}
               />
-              <span className="sr-only"> {accessibleHeadlineLastLine}</span>
+              <span className={styles.visuallyHidden}> {accessibleHeadlineLastLine}</span>
             </h1>
-            <div className="mt-2 flex flex-wrap items-center gap-x-7 gap-y-4 sm:gap-x-9">
-              <span aria-hidden="true">
+
+            {/* Third Line: "You" + "Explore Products" Button */}
+            <div className={styles.headlineLastRow}>
+              <span aria-hidden="true" className={styles.headlineLastWrap}>
                 <EditableElement
                   as="span"
                   id={`${section.id}-headline-word-3`}
                   field="value"
                   value={headlineLastLine}
-                  className="break-words font-light text-theme-foreground/90 [overflow-wrap:anywhere]"
+                  className={styles.headlineLast}
                 />
               </span>
               {section.primaryAction ? (
@@ -276,25 +331,27 @@ export function MeridianHero({
                   defaultText={section.primaryAction.label}
                   defaultHref={buildPageHref(section.primaryAction.targetPageId)}
                   onViewClick={handleActionNavigation(section.primaryAction.targetPageId)}
-                  className="inline-flex h-12 w-[180px] items-center justify-center rounded-full bg-theme-foreground text-[11px] font-semibold text-theme-surface shadow-sm transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0 sm:h-14 sm:w-[230px] lg:h-[60px] lg:w-[280px]"
-                  contentClassName="font-medium text-theme-surface"
+                  className={styles.heroCta}
+                  contentClassName={styles.heroCtaContent}
                 />
               ) : null}
             </div>
           </motion.div>
 
-          <motion.aside {...reveal(0.12)} className="pb-2 lg:justify-self-end" aria-label="Customer reviews">
-            <div className="w-full max-w-[245px]">
-              <div className="flex items-center gap-3">
-                <div className="flex -space-x-3" aria-hidden="true">
+          {/* Right: Reviewers Avatar Stack & Editorial Statement */}
+          <motion.aside {...reveal(0.12)} className={styles.reviewAside} aria-label="Customer reviews">
+            <div>
+              {/* Overlapping Avatars + 15K++ Positive Reviews */}
+              <div className={styles.reviewTop}>
+                <div className={styles.reviewAvatars} aria-hidden="true">
                   {REVIEWERS.map((reviewer) => (
                     <EditableImage
                       key={reviewer.key}
                       imageKey={reviewer.key}
                       defaultSrc={reviewer.src}
                       defaultAlt={reviewer.alt}
-                      containerClassName="h-10 w-10 rounded-full ring-2 ring-theme-surface"
-                      className="object-cover"
+                      containerClassName={styles.reviewAvatar}
+                      className={styles.reviewAvatarImage}
                     />
                   ))}
                 </div>
@@ -303,24 +360,27 @@ export function MeridianHero({
                   id={`${section.id}-social-proof-count`}
                   field="value"
                   value="15K++ Positive Reviews"
-                  className="max-w-24 text-[11px] font-extrabold leading-[1.2] tracking-[-0.02em] text-theme-foreground"
+                  className={styles.reviewCount}
                 />
               </div>
-              <div className="mt-4 flex items-start gap-3">
-                <span className="mt-2.5 h-px w-12 shrink-0 bg-theme-foreground/45" aria-hidden="true" />
+
+              {/* Horizontal Line Accent + Description Quote */}
+              <div className={styles.reviewQuote}>
+                <span className={styles.reviewRule} aria-hidden="true" />
                 <EditableElement
                   as="p"
                   id={`${section.id}-description`}
                   field="value"
                   value={section.description || 'Fashion is part of the daily air and it changes all the time, with all the events.'}
-                  className="text-[11px] leading-[1.45] text-theme-foreground/75"
+                  className={styles.reviewText}
                 />
               </div>
             </div>
           </motion.aside>
         </div>
 
-        <div className="mx-auto mt-20 grid max-w-[1216px] gap-8 sm:grid-cols-2 lg:mt-24 lg:grid-cols-3 lg:gap-14">
+        {/* ── Middle: Three Pastel Product Bento Cards ──────────────────── */}
+        <div className={styles.cardsGrid}>
           {cards.map((card, index) => {
             const [titleFirstLine, titleSecondLine] = splitCardTitle(card.title);
             const accessibleCardTitle = [
@@ -329,11 +389,12 @@ export function MeridianHero({
             ]
               .filter(Boolean)
               .join(' ');
+
             return (
               <motion.div
                 key={card.id}
                 {...reveal(0.18 + index * 0.06)}
-                className={index === 2 ? 'sm:col-span-2 lg:col-span-1' : undefined}
+                className={styles.cardMotion}
               >
                 <EditableElement
                   as="article"
@@ -341,34 +402,36 @@ export function MeridianHero({
                   field="background"
                   value=""
                   type="container"
-                  className={`group relative block h-[420px] overflow-hidden rounded-[56px] ${card.surfaceClassName} p-7 transition-transform duration-300 hover:-translate-y-1 sm:h-[440px] lg:h-[420px]`}
+                  className={`${styles.productCard} ${card.cardClassName}`}
                 >
-                  <div className="relative z-10">
+                  {/* Top Left: Category Pill & Two-Line Title */}
+                  <div className={styles.cardCopy}>
                     <EditableElement
                       as="span"
                       id={`${section.id}-card-${card.id}-tag`}
                       field="value"
                       value={card.tag}
-                      className="inline-flex min-h-9 items-center rounded-full bg-theme-surface/90 px-6 text-[11px] font-semibold text-theme-foreground shadow-xs backdrop-blur-md"
+                      className={styles.cardTag}
                     />
-                    <h2 className="mt-4 text-[30px] font-semibold leading-[0.95] tracking-[-0.035em] text-theme-foreground sm:text-[34px]">
+                    <h2 className={styles.cardTitle}>
                       <EditableElement
                         as="span"
                         id={`${section.id}-card-${card.id}-title-one`}
                         field="value"
                         value={titleFirstLine}
-                        className="block break-words [overflow-wrap:anywhere]"
+                        className={styles.cardTitleLine}
                       />
                       <EditableElement
                         as="span"
                         id={`${section.id}-card-${card.id}-title-two`}
                         field="value"
                         value={titleSecondLine}
-                        className="block break-words [overflow-wrap:anywhere]"
+                        className={styles.cardTitleLine}
                       />
                     </h2>
                   </div>
 
+                  {/* Card Main Image */}
                   <EditableImage
                     imageKey={card.imageKey}
                     defaultSrc={card.imageSrc}
@@ -378,22 +441,23 @@ export function MeridianHero({
                     objectFit={card.id === 'three' ? 'contain' : 'cover'}
                   />
 
-                  <div className="absolute bottom-4 left-4 right-4 z-10 flex h-[76px] items-center justify-between rounded-full border border-theme-surface/80 bg-theme-surface/70 py-2 pl-7 pr-2 shadow-sm backdrop-blur-xl">
+                  {/* Bottom: Floating Frosted Purchase Rail */}
+                  <div className={styles.purchaseRail}>
                     <EditableElement
                       as="span"
                       id={`${section.id}-card-${card.id}-price`}
                       field="value"
                       value={card.price}
-                      className="text-sm font-extrabold tracking-[-0.02em] text-theme-foreground"
+                      className={styles.price}
                     />
                     <EditableButton
                       buttonKey={`${section.id}-card-${card.id}-cart`}
                       defaultText={`Add ${card.title} to cart`}
                       onViewClick={() => addCardToCart(card)}
-                      className="inline-flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-theme-foreground text-theme-surface shadow-sm transition-transform duration-200 hover:scale-[1.04] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground active:scale-95"
+                      className={styles.cartButton}
                     >
-                      <ShoppingBag className="h-5 w-5" strokeWidth={1.6} aria-hidden="true" />
-                      <span className="sr-only">Add {accessibleCardTitle} to cart</span>
+                      <BasketIcon className={styles.basketIcon} />
+                      <span className={styles.visuallyHidden}>Add {accessibleCardTitle} to cart</span>
                     </EditableButton>
                   </div>
                 </EditableElement>
@@ -402,26 +466,43 @@ export function MeridianHero({
           })}
         </div>
 
+        {/* ── Bottom: Partner Marks Ribbon ──────────────────────────────── */}
         <motion.div
-          {...reveal(0.38)}
-          className="mt-24 border-y border-theme-border py-10 sm:mt-28 sm:py-12"
+          {...reveal(0.36)}
+          className={styles.partners}
         >
-          <div className="grid grid-cols-2 items-center gap-x-8 gap-y-9 sm:grid-cols-3 lg:grid-cols-5 lg:gap-10">
+          <div className={styles.partnerGrid}>
             {PARTNER_MARKS.map((partner) => (
-              <div key={partner.id} className="flex min-w-0 items-center justify-center gap-3 text-theme-foreground/80 grayscale">
-                <span className="h-9 w-9 shrink-0">{partner.icon}</span>
-                <EditableElement
-                  as="span"
-                  id={`${section.id}-partner-${partner.id}`}
-                  field="value"
-                  value={partner.label}
-                  className="max-w-28 text-[10px] font-bold uppercase leading-[1.25] tracking-[0.16em]"
-                />
+              <div
+                key={partner.id}
+                className={styles.partner}
+              >
+                <span className={`${styles.partnerIcon} ${partner.id === 'golden-studio' ? styles.partnerWideIcon : ''}`}>
+                  {partner.icon}
+                </span>
+                {partner.labelLine1 ? (
+                  <div className={styles.partnerCopy}>
+                    <EditableElement
+                      as="span"
+                      id={`${section.id}-partner-${partner.id}-1`}
+                      field="value"
+                      value={partner.labelLine1}
+                      className={styles.partnerName}
+                    />
+                    <EditableElement
+                      as="span"
+                      id={`${section.id}-partner-${partner.id}-2`}
+                      field="value"
+                      value={partner.labelLine2}
+                      className={styles.partnerMeta}
+                    />
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
         </motion.div>
       </div>
-    </section>
+    </EditableElement>
   );
 }

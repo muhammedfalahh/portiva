@@ -23,6 +23,7 @@ import type {
   PremiumTemplateDefinition,
 } from '@/lib/template-contract';
 import { useMeridianCart } from './cart';
+import styles from './MeridianLanding.module.css';
 
 interface MeridianHeaderProps {
   definition: PremiumTemplateDefinition;
@@ -107,30 +108,26 @@ export function MeridianHeader({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full text-theme-foreground">
+    <header className={styles.header}>
       {/* ── Main Top Bar ──────────────────────────────────────────────────── */}
       <div
-        className={`relative bg-theme-surface/90 backdrop-blur-xl transition-[box-shadow,border-color,background-color] duration-300 ${
-          scrolled
-            ? 'border-b border-theme-border shadow-xs'
-            : 'border-b border-theme-border/40'
-        }`}
+        className={`${styles.headerBar} ${scrolled ? styles.headerBarScrolled : ''}`}
       >
         <nav
           aria-label="Main Navigation"
-          className="mx-auto flex h-14 w-full max-w-[1280px] items-center justify-between gap-4 px-4 sm:h-16 sm:px-6 lg:px-0"
+          className={styles.nav}
         >
           {/* Left: Brand Logo Wordmark */}
-          <div className="flex min-w-0 items-center gap-3">
+          <div className={styles.brandGroup}>
             <button
               type="button"
               onClick={() => setMobileNavOpen((value) => !value)}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-theme-border/60 text-theme-foreground transition-colors hover:bg-theme-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground lg:hidden"
+              className={styles.menuButton}
               aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileNavOpen}
               aria-controls="meridian-mobile-navigation"
             >
-              {mobileNavOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
+              {mobileNavOpen ? <X className={styles.actionIcon} aria-hidden="true" /> : <Menu className={styles.actionIcon} aria-hidden="true" />}
             </button>
             <EditableElement
               as="a"
@@ -139,12 +136,12 @@ export function MeridianHeader({
               value={definition.brandName || 'Nest'}
               href={buildPageHref('home')}
               onClick={(event) => navigate(event, 'home')}
-              className="min-w-0 truncate font-sans text-lg font-bold tracking-[-0.035em] text-theme-foreground sm:text-xl"
+              className={styles.brand}
             />
           </div>
 
           {/* Center: Editorial Nav Links */}
-          <ul className="hidden items-center gap-10 lg:flex">
+          <ul className={styles.desktopNav}>
             {NAV_ENTRIES.map((entry) => {
               const isActive =
                 (entry.id === 'home' && activePageId === 'home') ||
@@ -159,11 +156,7 @@ export function MeridianHeader({
                     href={buildPageHref(entry.pageId)}
                     onClick={(event) => navigate(event, entry.pageId)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`relative text-[11px] font-medium transition-colors duration-200 ${
-                      isActive
-                        ? 'font-semibold text-theme-foreground'
-                        : 'text-theme-muted hover:text-theme-foreground'
-                    }`}
+                    className={`${styles.navLink} ${isActive ? styles.navLinkActive : ''}`}
                   />
                 </li>
               );
@@ -171,24 +164,24 @@ export function MeridianHeader({
           </ul>
 
           {/* Right: Actions (Search, Sign In, Wishlist, Bag) */}
-          <div className="flex items-center gap-0.5 sm:gap-1">
+          <div className={styles.actions}>
             {/* Search */}
             <a
               href={buildPageHref('shop')}
               onClick={(event) => navigate(event, 'shop')}
               aria-label="Search catalog"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full text-theme-foreground/80 transition-colors hover:bg-theme-surface-hover hover:text-theme-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground lg:h-9 lg:w-9"
+              className={styles.action}
             >
-              <Search className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
+              <Search className={styles.actionIcon} strokeWidth={1.7} aria-hidden="true" />
             </a>
 
             {/* Sign in / User */}
             <button
               type="button"
               aria-label="Sign in"
-              className="hidden h-11 items-center gap-1.5 rounded-full px-2 text-[11px] font-medium text-theme-foreground/80 transition-colors hover:bg-theme-surface-hover hover:text-theme-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground sm:inline-flex lg:h-9"
+              className={styles.signIn}
             >
-              <User className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
+              <User className={styles.actionIcon} strokeWidth={1.7} aria-hidden="true" />
               <EditableElement
                 as="span"
                 id="meridian-sign-in"
@@ -201,11 +194,11 @@ export function MeridianHeader({
             <button
               type="button"
               aria-label={`Wishlist (${cart.wishlistCount} items)`}
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-theme-foreground/80 transition-colors hover:bg-theme-surface-hover hover:text-theme-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground lg:h-9 lg:w-9"
+              className={styles.action}
             >
-              <Heart className={`h-4 w-4 ${cart.wishlistCount > 0 ? 'fill-theme-accent text-theme-accent' : ''}`} strokeWidth={1.7} aria-hidden="true" />
+              <Heart className={styles.actionIcon} fill={cart.wishlistCount > 0 ? 'currentColor' : 'none'} strokeWidth={1.7} aria-hidden="true" />
               {cart.wishlistCount > 0 ? (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[10px] font-bold text-theme-accent-text shadow-xs">
+                <span className={styles.badge}>
                   {cart.wishlistCount}
                 </span>
               ) : null}
@@ -218,9 +211,9 @@ export function MeridianHeader({
                 if (mode !== 'builder') cart.openCart();
               }}
               aria-label={`Open bag, ${cart.itemCount} items`}
-              className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-theme-foreground/90 transition-colors hover:bg-theme-surface-hover hover:text-theme-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-theme-foreground lg:h-9 lg:w-9"
+              className={styles.action}
             >
-              <ShoppingBag className="h-4 w-4" strokeWidth={1.7} aria-hidden="true" />
+              <ShoppingBag className={styles.actionIcon} strokeWidth={1.7} aria-hidden="true" />
               <AnimatePresence mode="popLayout" initial={false}>
                 {cart.itemCount > 0 ? (
                   <motion.span
@@ -229,12 +222,12 @@ export function MeridianHeader({
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.5 }}
                     transition={prefersReducedMotion ? { duration: 0 } : { type: 'spring', bounce: 0, duration: 0.35 }}
-                    className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[9px] font-bold leading-none text-theme-accent-text shadow-xs"
+                    className={styles.badge}
                   >
                     {cart.itemCount}
                   </motion.span>
                 ) : (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-theme-accent text-[9px] font-bold leading-none text-theme-accent-text shadow-xs">
+                  <span className={styles.badge}>
                     0
                   </span>
                 )}
@@ -252,9 +245,9 @@ export function MeridianHeader({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={mode === 'builder' || prefersReducedMotion ? { duration: 0 } : { duration: 0.2 }}
-              className="absolute inset-x-0 top-full overflow-hidden border-t border-theme-border bg-theme-surface/95 shadow-lg backdrop-blur-xl lg:hidden"
+              className={styles.mobileNav}
             >
-              <ul className="space-y-1 px-4 py-4 sm:px-6">
+              <ul className={styles.mobileNavList}>
                 {NAV_ENTRIES.map((entry) => {
                   const isActive =
                     (entry.id === 'home' && activePageId === 'home') ||
@@ -269,11 +262,7 @@ export function MeridianHeader({
                         href={buildPageHref(entry.pageId)}
                         onClick={(event) => navigate(event, entry.pageId)}
                         aria-current={isActive ? 'page' : undefined}
-                        className={`block rounded-xl px-4 py-3 text-base font-semibold transition-colors ${
-                          isActive
-                            ? 'bg-theme-surface text-theme-foreground'
-                            : 'text-theme-muted hover:bg-theme-surface hover:text-theme-foreground'
-                        }`}
+                        className={`${styles.mobileNavLink} ${isActive ? styles.mobileNavLinkActive : ''}`}
                       />
                     </li>
                   );

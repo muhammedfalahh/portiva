@@ -1,0 +1,817 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  width: 100%;
+  color: var(--theme-foreground);
+}
+
+.headerBar {
+  position: relative;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-foreground) 10%, transparent);
+  background: color-mix(in srgb, var(--theme-surface) 91%, transparent);
+  backdrop-filter: blur(18px) saturate(135%);
+  transition: background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.headerBarScrolled {
+  border-bottom-color: color-mix(in srgb, var(--theme-foreground) 16%, transparent);
+  box-shadow: 0 8px 28px rgb(17 19 28 / 5%);
+}
+
+.nav {
+  display: grid;
+  width: 100%;
+  max-width: 1280px;
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 0 24px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+}
+
+.brandGroup,
+.actions,
+.signIn {
+  display: flex;
+  align-items: center;
+}
+
+.brandGroup {
+  min-width: 0;
+  gap: 12px;
+}
+
+.brand {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--theme-foreground);
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desktopNav {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+  gap: 42px;
+  list-style: none;
+}
+
+.navLink {
+  color: color-mix(in srgb, var(--theme-foreground) 62%, transparent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.navLink:hover,
+.navLinkActive {
+  color: var(--theme-foreground);
+}
+
+.navLinkActive {
+  font-weight: 650;
+}
+
+.actions {
+  gap: 2px;
+  justify-self: end;
+}
+
+.action,
+.menuButton {
+  position: relative;
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  color: color-mix(in srgb, var(--theme-foreground) 82%, transparent);
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.action:hover,
+.menuButton:hover,
+.signIn:hover {
+  color: var(--theme-foreground);
+  background: color-mix(in srgb, var(--theme-foreground) 6%, transparent);
+}
+
+.action:focus-visible,
+.menuButton:focus-visible,
+.signIn:focus-visible,
+.cartButton:focus-visible,
+.heroCta:focus-visible {
+  outline: 2px solid var(--theme-foreground);
+  outline-offset: 3px;
+}
+
+.actionIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.signIn {
+  height: 36px;
+  padding: 0 8px;
+  gap: 6px;
+  border: 0;
+  border-radius: 999px;
+  color: color-mix(in srgb, var(--theme-foreground) 82%, transparent);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: flex;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  color: var(--theme-accent-text);
+  background: var(--theme-accent);
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1;
+}
+
+.menuButton {
+  display: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid color-mix(in srgb, var(--theme-foreground) 12%, transparent);
+}
+
+.mobileNav {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border-top: 1px solid color-mix(in srgb, var(--theme-foreground) 10%, transparent);
+  background: color-mix(in srgb, var(--theme-surface) 96%, transparent);
+  box-shadow: 0 18px 36px rgb(17 19 28 / 10%);
+  backdrop-filter: blur(18px);
+}
+
+.mobileNavList {
+  margin: 0;
+  padding: 16px 20px;
+  list-style: none;
+}
+
+.mobileNavLink {
+  display: block;
+  min-height: 44px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: color-mix(in srgb, var(--theme-foreground) 65%, transparent);
+  font-size: 16px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.mobileNavLinkActive {
+  color: var(--theme-foreground);
+  background: color-mix(in srgb, var(--theme-foreground) 6%, transparent);
+}
+
+.hero {
+  --meridian-ink: #11131c;
+  --meridian-paper: #ffffff;
+  --meridian-pink: #fcecef;
+  --meridian-lime: #f2f9ad;
+  --meridian-lilac: #e9e1fa;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  color: var(--meridian-ink);
+  background: var(--meridian-paper);
+}
+
+.heroFrame {
+  position: relative;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 128px 0 80px;
+}
+
+.heroTop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  align-items: end;
+  gap: 72px;
+}
+
+.headlineBlock {
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(58px, 5.55vw, 80px);
+  letter-spacing: -0.04em;
+  line-height: 0.99;
+}
+
+.headline {
+  min-width: 0;
+  margin: 0;
+  font: inherit;
+}
+
+.headlineLight,
+.headlineBold,
+.headlineLast {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.headlineLight,
+.headlineLast {
+  font-weight: 300;
+}
+
+.headlineBold {
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+.headlineLastRow {
+  display: flex;
+  margin-top: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+}
+
+.headlineLastWrap {
+  font: inherit;
+  line-height: inherit;
+}
+
+.heroCta {
+  display: inline-flex;
+  width: 280px;
+  height: 60px;
+  padding: 0 30px;
+  border: 0;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  color: var(--meridian-paper);
+  background: #181b26;
+  box-shadow: 0 8px 18px rgb(17 19 28 / 10%);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1;
+  text-decoration: none;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.heroCta:hover {
+  background: #282d3c;
+  transform: translateY(-2px);
+}
+
+.heroCtaContent {
+  color: inherit;
+  font: inherit;
+}
+
+.reviewAside {
+  width: 250px;
+  padding-bottom: 12px;
+  justify-self: end;
+}
+
+.reviewTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reviewAvatars {
+  display: flex;
+}
+
+.reviewAvatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border: 2px solid var(--meridian-paper);
+  border-radius: 999px;
+}
+
+.reviewAvatar + .reviewAvatar {
+  margin-left: -12px;
+}
+
+.reviewAvatarImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reviewCount {
+  max-width: 98px;
+  color: var(--meridian-ink);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.reviewQuote {
+  display: flex;
+  margin-top: 16px;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.reviewRule {
+  width: 48px;
+  height: 1px;
+  margin-top: 8px;
+  flex: 0 0 auto;
+  background: rgb(17 19 28 / 46%);
+}
+
+.reviewText {
+  margin: 0;
+  color: rgb(17 19 28 / 75%);
+  font-size: 11px;
+  font-weight: 450;
+  line-height: 1.45;
+}
+
+.cardsGrid {
+  display: grid;
+  max-width: 1240px;
+  margin: 132px auto 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 64px;
+}
+
+.cardMotion {
+  width: 100%;
+  min-width: 0;
+}
+
+.productCard {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 0.86;
+  overflow: hidden;
+  padding: 28px;
+  border-radius: 56px;
+  transition: transform 240ms ease, box-shadow 240ms ease;
+}
+
+.productCard:hover {
+  box-shadow: 0 22px 38px rgb(17 19 28 / 9%);
+  transform: translateY(-4px);
+}
+
+.cardPink {
+  background: var(--meridian-pink);
+}
+
+.cardLime {
+  background: var(--meridian-lime);
+}
+
+.cardLilac {
+  background: var(--meridian-lilac);
+}
+
+.cardCopy {
+  position: relative;
+  z-index: 2;
+}
+
+.cardTag {
+  display: inline-flex;
+  min-height: 38px;
+  padding: 0 24px;
+  border-radius: 999px;
+  align-items: center;
+  color: var(--meridian-ink);
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 3px 10px rgb(17 19 28 / 5%);
+  backdrop-filter: blur(12px);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cardTitle {
+  margin: 14px 0 0;
+  color: var(--meridian-ink);
+  font-size: clamp(27px, 2.35vw, 34px);
+  font-weight: 650;
+  letter-spacing: -0.035em;
+  line-height: 0.97;
+}
+
+.cardTitleLine {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.modelImage,
+.shoeImage {
+  position: absolute;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.modelImage {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80%;
+  mask-image: linear-gradient(to right, transparent 0%, #000 22%);
+}
+
+.shoeImage {
+  top: 18%;
+  right: -5%;
+  width: 86%;
+  height: 67%;
+}
+
+.modelImageElement,
+.shoeImageElement {
+  display: block;
+  width: 100%;
+  height: 100%;
+  mix-blend-mode: multiply;
+  transition: transform 420ms ease;
+}
+
+.modelImageElement {
+  object-fit: cover;
+  object-position: 56% center;
+}
+
+.shoeImageElement {
+  object-fit: contain;
+  filter: hue-rotate(145deg) saturate(0.68);
+}
+
+.productCard:hover .modelImageElement,
+.productCard:hover .shoeImageElement {
+  transform: scale(1.035);
+}
+
+.purchaseRail {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  left: 16px;
+  z-index: 3;
+  display: flex;
+  height: 76px;
+  padding: 8px 8px 8px 28px;
+  border: 1px solid rgb(255 255 255 / 78%);
+  border-radius: 999px;
+  align-items: center;
+  justify-content: space-between;
+  background: rgb(255 255 255 / 66%);
+  box-shadow: 0 12px 32px rgb(17 19 28 / 7%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.price {
+  color: var(--meridian-ink);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.cartButton {
+  display: inline-flex;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: var(--meridian-paper);
+  background: #181b26;
+  box-shadow: 0 7px 16px rgb(17 19 28 / 14%);
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.cartButton:hover {
+  background: #282d3c;
+  transform: scale(1.04);
+}
+
+.basketIcon {
+  width: 20px;
+  height: 20px;
+}
+
+.visuallyHidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.partners {
+  margin-top: 120px;
+  padding: 62px 0;
+  border-top: 1px solid rgb(17 19 28 / 10%);
+  border-bottom: 1px solid rgb(17 19 28 / 10%);
+}
+
+.partnerGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  gap: 32px;
+}
+
+.partner {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: rgb(17 19 28 / 78%);
+  filter: grayscale(1);
+}
+
+.partnerIcon {
+  display: block;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+}
+
+.partnerIcon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.partnerWideIcon {
+  width: 80px;
+}
+
+.partnerCopy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.partnerName,
+.partnerMeta {
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.partnerName {
+  color: var(--meridian-ink);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.partnerMeta {
+  color: rgb(17 19 28 / 66%);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+@media (max-width: 1319px) {
+  .nav,
+  .heroFrame {
+    padding-right: 32px;
+    padding-left: 32px;
+  }
+
+  .cardsGrid {
+    gap: 32px;
+  }
+}
+
+@media (max-width: 959px) {
+  .desktopNav {
+    display: none;
+  }
+
+  .menuButton {
+    display: inline-flex;
+  }
+
+  .action,
+  .signIn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .heroFrame {
+    padding-top: 64px;
+  }
+
+  .heroTop {
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 32px;
+  }
+
+  .headlineBlock {
+    font-size: clamp(48px, 7vw, 64px);
+  }
+
+  .heroCta {
+    width: 210px;
+    height: 52px;
+  }
+
+  .reviewAside {
+    width: 220px;
+  }
+
+  .cardsGrid {
+    margin-top: 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .cardMotion:last-child {
+    width: calc((100% - 24px) / 2);
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+
+  .productCard {
+    padding: 22px;
+    border-radius: 40px;
+  }
+
+  .cardTag {
+    min-height: 32px;
+    padding: 0 16px;
+  }
+
+  .purchaseRail {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    height: 62px;
+    padding: 6px 6px 6px 20px;
+  }
+
+  .cartButton {
+    width: 50px;
+    height: 50px;
+  }
+
+  .partners {
+    margin-top: 88px;
+  }
+}
+
+@media (min-width: 960px) {
+  .mobileNav {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .nav {
+    min-height: 56px;
+    padding: 0 16px;
+  }
+
+  .signIn {
+    display: none;
+  }
+
+  .heroFrame {
+    padding: 44px 20px 56px;
+  }
+
+  .heroTop {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .headlineBlock {
+    font-size: clamp(44px, 14vw, 58px);
+  }
+
+  .headlineBold {
+    font-size: 0.82em;
+  }
+
+  .headlineLastRow {
+    align-items: center;
+    gap: 14px 20px;
+  }
+
+  .heroCta {
+    width: 176px;
+    height: 48px;
+    padding: 0 20px;
+  }
+
+  .reviewAside {
+    width: min(100%, 260px);
+    padding-bottom: 0;
+    justify-self: start;
+  }
+
+  .cardsGrid {
+    margin-top: 64px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .cardMotion:last-child {
+    width: 100%;
+    grid-column: auto;
+  }
+
+  .productCard {
+    max-height: 460px;
+    border-radius: 42px;
+  }
+
+  .partnerGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 20px;
+  }
+
+  .partner {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 390px) {
+  .headlineBlock {
+    font-size: 42px;
+  }
+
+  .headlineLastRow {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .heroCta {
+    width: 184px;
+  }
+
+  .actions {
+    gap: 0;
+  }
+
+  .action:nth-of-type(2) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .productCard,
+  .modelImageElement,
+  .shoeImageElement,
+  .heroCta,
+  .cartButton {
+    transition-duration: 0.01ms;
+  }
+}
